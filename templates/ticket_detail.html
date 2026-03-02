@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex align-items-center mb-4">
+        <a href="/tickets" class="btn btn-outline-secondary btn-sm me-3">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <h1 class="mb-0">Ticket #{{ ticket.ticket_number }}</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Ticket Details -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ ticket.subject }}</h5>
+                    <span class="badge bg-{{ ticket.status | status_color }}">
+                        {{ ticket.status | status_label }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Categorie</small>
+                            <span class="badge bg-secondary">{{ ticket.category }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Prioriteit</small>
+                            <span class="badge bg-{{ ticket.priority | priority_color }}">
+                                {{ ticket.priority | priority_label }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-2">Beschrijving</small>
+                        <p class="mb-0" style="white-space: pre-wrap;">{{ ticket.description }}</p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row text-muted small">
+                        <div class="col-sm-6">
+                            <i class="bi bi-calendar me-1"></i>
+                            Aangemaakt: {{ ticket.created_at | datetime }}
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="bi bi-clock me-1"></i>
+                            Laatste update: {{ ticket.updated_at | datetime }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Reacties</h5>
+                </div>
+                <div class="card-body">
+                    {% if comments %}
+                        <div class="mb-4">
+                            {% for comment in comments %}
+                                <div class="d-flex mb-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="rounded-circle bg-{{ 'primary' if comment.author_type == 'admin' else 'secondary' }} text-white d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px;">
+                                            <i class="bi bi-{{ 'headset' if comment.author_type == 'admin' else 'person' }}"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">{{ comment.author_name }}</h6>
+                                            <small class="text-muted">{{ comment.created_at | datetime }}</small>
+                                        </div>
+                                        <p class="mb-0 mt-1" style="white-space: pre-wrap;">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                                {% if not loop.last %}<hr>{% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">Nog geen reacties op dit ticket.</p>
+                    {% endif %}
+
+                    <!-- Add Comment Form -->
+                    {% if ticket.status not in ['closed', 'resolved'] %}
+                        <form method="post" action="/tickets/{{ ticket.id }}/comment">
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Reactie toevoegen</label>
+                                <textarea class="form-control" id="content" name="content" 
+                                          rows="3" placeholder="Typ uw reactie..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-2"></i>Verstuur
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informatie</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Ticketnummer</small>
+                        <strong>{{ ticket.ticket_number }}</strong>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Status</small>
+                        <span class="badge bg-{{ ticket.status | status_color }}">
+                            {{ ticket.status | status_label }}
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Prioriteit</small>
+                        <span class="badge bg-{{ ticket.priority | priority_color }}">
+                            {{ ticket.priority | priority_label }}
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Categorie</small>
+                        <span class="badge bg-secondary">{{ ticket.category }}</span>
+                    </div>
+                    {% if ticket.resolved_at %}
+                        <div class="mb-0">
+                            <small class="text-muted d-block">Opgelost op</small>
+                            <i class="bi bi-check-circle-fill text-success me-1"></i>
+                            {{ ticket.resolved_at | datetime }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

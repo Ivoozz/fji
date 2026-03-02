@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center py-5">
+                <h1 class="display-4 fw-bold mb-4">Welkom bij FixJeICT</h1>
+                <p class="lead text-muted mb-5">
+                    Professionele IT-support voor al uw technische vragen en problemen. 
+                    Maak eenvoudig een ticket aan en wij helpen u snel verder.
+                </p>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-lightning-charge text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">Snelle Reactie</h5>
+                                <p class="card-text text-muted">Binnen 24 uur reactie op uw ticket</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">Professioneel</h5>
+                                <p class="card-text text-muted">Ervaren IT-specialisten</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-clock-history text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">24/7 Bereikbaar</h5>
+                                <p class="card-text text-muted">Altijd en overal uw tickets inzien</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user %}
+                    <a href="/tickets/new" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-plus-circle me-2"></i>Nieuw Ticket
+                    </a>
+                    <a href="/tickets" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-list me-2"></i>Mijn Tickets
+                    </a>
+                {% else %}
+                    <a href="/login" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Inloggen
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

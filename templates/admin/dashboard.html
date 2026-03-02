@@ -1,0 +1,124 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+    <span class="text-muted">{{ now().strftime('%d-%m-%Y') if now is defined else '' }}</span>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Totaal Tickets</h6>
+                        <h2 class="mb-0">{{ stats.total_tickets }}</h2>
+                    </div>
+                    <i class="bi bi-ticket" style="font-size: 2.5rem; opacity: 0.7;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Open</h6>
+                        <h2 class="mb-0">{{ stats.open_tickets }}</h2>
+                    </div>
+                    <i class="bi bi-exclamation-circle" style="font-size: 2.5rem; opacity: 0.7;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">In Behandeling</h6>
+                        <h2 class="mb-0">{{ stats.in_progress_tickets }}</h2>
+                    </div>
+                    <i class="bi bi-arrow-repeat" style="font-size: 2.5rem; opacity: 0.7;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Opgelost</h6>
+                        <h2 class="mb-0">{{ stats.resolved_tickets }}</h2>
+                    </div>
+                    <i class="bi bi-check-circle" style="font-size: 2.5rem; opacity: 0.7;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Tickets -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recente Tickets</h5>
+                <a href="/admin/tickets" class="btn btn-sm btn-outline-primary">Bekijk alle</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ticket #</th>
+                                <th>Onderwerp</th>
+                                <th>Gebruiker</th>
+                                <th>Status</th>
+                                <th>Prioriteit</th>
+                                <th>Datum</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket in recent_tickets %}
+                                <tr>
+                                    <td><code>{{ ticket.ticket_number }}</code></td>
+                                    <td class="text-truncate" style="max-width: 200px;">{{ ticket.subject }}</td>
+                                    <td>{{ ticket.user.name }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ ticket.status | status_color }}">
+                                            {{ ticket.status | status_label }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ ticket.priority | priority_color }}">
+                                            {{ ticket.priority | priority_label }}
+                                        </span>
+                                    </td>
+                                    <td>{{ ticket.created_at | datetime }}</td>
+                                    <td>
+                                        <a href="/admin/tickets/{{ ticket.id }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox me-2"></i>Geen tickets gevonden
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

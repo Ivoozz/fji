@@ -1,0 +1,210 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="/admin/tickets" class="btn btn-outline-secondary btn-sm me-3">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h1 class="h2 mb-0">Ticket #{{ ticket.ticket_number }}</h1>
+    <span class="badge bg-{{ ticket.status | status_color }} ms-3 fs-6">
+        {{ ticket.status | status_label }}
+    </span>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Ticket Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Details</h5>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ ticket.subject }}</h5>
+                
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Categorie</small>
+                        <span class="badge bg-secondary">{{ ticket.category }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Prioriteit</small>
+                        <span class="badge bg-{{ ticket.priority | priority_color }}">
+                            {{ ticket.priority | priority_label }}
+                        </span>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Aangemaakt</small>
+                        {{ ticket.created_at | datetime }}
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Laatste update</small>
+                        {{ ticket.updated_at | datetime }}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <small class="text-muted d-block mb-2">Beschrijving</small>
+                    <p class="mb-0" style="white-space: pre-wrap;">{{ ticket.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pencil me-2"></i>Ticket Bijwerken</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/admin/tickets/{{ ticket.id }}/update">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+                                <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In behandeling</option>
+                                <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Opgelost</option>
+                                <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Gesloten</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Prioriteit</label>
+                            <select class="form-select" name="priority">
+                                <option value="low" {% if ticket.priority == 'low' %}selected{% endif %}>Laag</option>
+                                <option value="medium" {% if ticket.priority == 'medium' %}selected{% endif %}>Normaal</option>
+                                <option value="high" {% if ticket.priority == 'high' %}selected{% endif %}>Hoog</option>
+                                <option value="urgent" {% if ticket.priority == 'urgent' %}selected{% endif %}>Spoed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-save me-2"></i>Opslaan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Comments -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Reacties</h5>
+            </div>
+            <div class="card-body">
+                {% if comments %}
+                    <div class="mb-4">
+                        {% for comment in comments %}
+                            <div class="d-flex mb-3 {% if comment.is_internal %}bg-light p-3 rounded{% endif %}">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-{{ 'primary' if comment.author_type == 'admin' else 'secondary' if comment.author_type == 'system' else 'success' }} text-white d-flex align-items-center justify-content-center" 
+                                         style="width: 40px; height: 40px;">
+                                        <i class="bi bi-{{ 'headset' if comment.author_type == 'admin' else 'gear' if comment.author_type == 'system' else 'person' }}"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">
+                                            {{ comment.author_name }}
+                                            {% if comment.is_internal %}
+                                                <span class="badge bg-warning text-dark ms-2">Intern</span>
+                                            {% endif %}
+                                        </h6>
+                                        <small class="text-muted">{{ comment.created_at | datetime }}</small>
+                                    </div>
+                                    <p class="mb-0 mt-1" style="white-space: pre-wrap;">{{ comment.content }}</p>
+                                </div>
+                            </div>
+                            {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nog geen reacties.</p>
+                {% endif %}
+
+                <!-- Add Comment Form -->
+                <form method="post" action="/admin/tickets/{{ ticket.id }}/comment">
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Reactie toevoegen</label>
+                        <textarea class="form-control" id="content" name="content" 
+                                  rows="3" placeholder="Typ uw reactie..." required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_internal" name="is_internal" value="true">
+                            <label class="form-check-label" for="is_internal">
+                                <i class="bi bi-lock me-1"></i>Interne notitie
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-2"></i>Verstuur
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- User Info -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person me-2"></i>Gebruiker</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <small class="text-muted d-block">Naam</small>
+                    <strong>{{ ticket.user.name }}</strong>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted d-block">E-mail</small>
+                    <a href="mailto:{{ ticket.user.email }}">{{ ticket.user.email }}</a>
+                </div>
+                {% if ticket.user.phone %}
+                    <div class="mb-2">
+                        <small class="text-muted d-block">Telefoon</small>
+                        <a href="tel:{{ ticket.user.phone }}">{{ ticket.user.phone }}</a>
+                    </div>
+                {% endif %}
+                {% if ticket.user.company %}
+                    <div class="mb-0">
+                        <small class="text-muted d-block">Bedrijf</small>
+                        {{ ticket.user.company }}
+                    </div>
+                {% endif %}
+                <hr>
+                <a href="/admin/users/{{ ticket.user.id }}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="bi bi-eye me-2"></i>Bekijk profiel
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Statistieken</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <small class="text-muted d-block">Reacties</small>
+                    <strong>{{ comments|length }}</strong>
+                </div>
+                <div class="mb-0">
+                    <small class="text-muted d-block">Doorlooptijd</small>
+                    {% if ticket.resolved_at %}
+                        <strong>
+                            {% set diff = ticket.resolved_at - ticket.created_at %}
+                            {% set hours = (diff.total_seconds() / 3600)|int %}
+                            {{ hours }} uur
+                        </strong>
+                    {% else %}
+                        <span class="text-muted">Nog niet opgelost</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

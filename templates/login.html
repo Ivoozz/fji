@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+                        <h2 class="mt-3">Inloggen</h2>
+                        <p class="text-muted">Voer uw e-mailadres in om een magic link te ontvangen</p>
+                    </div>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="/login">
+                        <div class="mb-4">
+                            <label for="email" class="form-label">E-mailadres</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       placeholder="uw@email.nl" required autofocus>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send me-2"></i>Verstuur Magic Link
+                        </button>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            U ontvangt een e-mail met een link om direct in te loggen
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

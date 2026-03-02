@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-4">
+                <a href="/tickets" class="btn btn-outline-secondary btn-sm me-3">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <h1 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Nieuw Ticket</h1>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="post" action="/tickets/new">
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Onderwerp *</label>
+                            <input type="text" class="form-control" id="subject" name="subject" 
+                                   placeholder="Kort onderwerp van uw probleem" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Categorie *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Selecteer categorie...</option>
+                                    <option value="hardware">Hardware</option>
+                                    <option value="software">Software</option>
+                                    <option value="netwerk">Netwerk</option>
+                                    <option value="email">E-mail</option>
+                                    <option value="printer">Printer</option>
+                                    <option value="overig">Overig</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="priority" class="form-label">Prioriteit</label>
+                                <select class="form-select" id="priority" name="priority">
+                                    <option value="low">Laag</option>
+                                    <option value="medium" selected>Normaal</option>
+                                    <option value="high">Hoog</option>
+                                    <option value="urgent">Spoed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Beschrijving *</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="6" placeholder="Beschrijf uw probleem zo gedetailleerd mogelijk..." 
+                                      required></textarea>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Vermeld relevante details zoals foutmeldingen, wanneer het probleem begon, etc.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/tickets" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Annuleren
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>Ticket Aanmaken
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

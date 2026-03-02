@@ -1,0 +1,141 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2"><i class="bi bi-ticket me-2"></i>Alle Tickets</h1>
+    <span class="badge bg-secondary">{{ pagination.total }} tickets</span>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Zoeken</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="search" value="{{ filters.search or '' }}" 
+                           placeholder="Ticket #, onderwerp...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status">
+                    <option value="">Alle</option>
+                    <option value="open" {% if filters.status == 'open' %}selected{% endif %}>Open</option>
+                    <option value="in_progress" {% if filters.status == 'in_progress' %}selected{% endif %}>In behandeling</option>
+                    <option value="resolved" {% if filters.status == 'resolved' %}selected{% endif %}>Opgelost</option>
+                    <option value="closed" {% if filters.status == 'closed' %}selected{% endif %}>Gesloten</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Prioriteit</label>
+                <select class="form-select" name="priority">
+                    <option value="">Alle</option>
+                    <option value="low" {% if filters.priority == 'low' %}selected{% endif %}>Laag</option>
+                    <option value="medium" {% if filters.priority == 'medium' %}selected{% endif %}>Normaal</option>
+                    <option value="high" {% if filters.priority == 'high' %}selected{% endif %}>Hoog</option>
+                    <option value="urgent" {% if filters.priority == 'urgent' %}selected{% endif %}>Spoed</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Categorie</label>
+                <select class="form-select" name="category">
+                    <option value="">Alle</option>
+                    <option value="hardware" {% if filters.category == 'hardware' %}selected{% endif %}>Hardware</option>
+                    <option value="software" {% if filters.category == 'software' %}selected{% endif %}>Software</option>
+                    <option value="netwerk" {% if filters.category == 'netwerk' %}selected{% endif %}>Netwerk</option>
+                    <option value="email" {% if filters.category == 'email' %}selected{% endif %}>E-mail</option>
+                    <option value="printer" {% if filters.category == 'printer' %}selected{% endif %}>Printer</option>
+                    <option value="overig" {% if filters.category == 'overig' %}selected{% endif %}>Overig</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-1"></i>Filteren
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tickets Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Onderwerp</th>
+                        <th>Gebruiker</th>
+                        <th>Status</th>
+                        <th>Prioriteit</th>
+                        <th>Categorie</th>
+                        <th>Aangemaakt</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                        <tr>
+                            <td><code>{{ ticket.ticket_number }}</code></td>
+                            <td class="text-truncate" style="max-width: 250px;">{{ ticket.subject }}</td>
+                            <td>{{ ticket.user.name }}</td>
+                            <td>
+                                <span class="badge bg-{{ ticket.status | status_color }}">
+                                    {{ ticket.status | status_label }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ ticket.priority | priority_color }}">
+                                    {{ ticket.priority | priority_label }}
+                                </span>
+                            </td>
+                            <td><span class="badge bg-secondary">{{ ticket.category }}</span></td>
+                            <td>{{ ticket.created_at | datetime }}</td>
+                            <td>
+                                <a href="/admin/tickets/{{ ticket.id }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                                <p class="mt-2">Geen tickets gevonden</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    {% if pagination.total_pages > 1 %}
+        <div class="card-footer">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="?page={{ pagination.page - 1 }}{% if filters.status %}&status={{ filters.status }}{% endif %}{% if filters.priority %}&priority={{ filters.priority }}{% endif %}{% if filters.search %}&search={{ filters.search }}{% endif %}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% for p in range(1, pagination.total_pages + 1) %}
+                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="?page={{ p }}{% if filters.status %}&status={{ filters.status }}{% endif %}{% if filters.priority %}&priority={{ filters.priority }}{% endif %}{% if filters.search %}&search={{ filters.search }}{% endif %}">{{ p }}</a>
+                        </li>
+                    {% endfor %}
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="?page={{ pagination.page + 1 }}{% if filters.status %}&status={{ filters.status }}{% endif %}{% if filters.priority %}&priority={{ filters.priority }}{% endif %}{% if filters.search %}&search={{ filters.search }}{% endif %}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
