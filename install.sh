@@ -5,7 +5,7 @@ set -e
 # FixJeICT v2 Installer
 # ==========================================
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/Ivoozz/fixjeictv2/main/install.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/Ivoozz/fji/main/install.sh | sudo bash
 #
 # Custom credentials (non-interactive):
 #   ADMIN_USERNAME=myuser ADMIN_PASSWORD=mypass curl -fsSL ... | sudo bash
@@ -13,8 +13,8 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive
 
-INSTALL_DIR="/opt/fixjeictv2"
-GITHUB_REPO="https://github.com/Ivoozz/fixjeictv2"
+INSTALL_DIR="/opt/fji"
+GITHUB_REPO="https://github.com/Ivoozz/fji"
 SERVICE_NAME="fixjeict"
 
 GREEN='\033[0;32m'
