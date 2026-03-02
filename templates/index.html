@@ -1,60 +1,105 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="text-center py-5">
-                <h1 class="display-4 fw-bold mb-4">Welkom bij FixJeICT</h1>
-                <p class="lead text-muted mb-5">
-                    Professionele IT-support voor al uw technische vragen en problemen. 
-                    Maak eenvoudig een ticket aan en wij helpen u snel verder.
-                </p>
-                
-                <div class="row g-4 mb-5">
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0">
-                            <div class="card-body text-center">
-                                <i class="bi bi-lightning-charge text-primary" style="font-size: 3rem;"></i>
-                                <h5 class="card-title mt-3">Snelle Reactie</h5>
-                                <p class="card-text text-muted">Binnen 24 uur reactie op uw ticket</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0">
-                            <div class="card-body text-center">
-                                <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
-                                <h5 class="card-title mt-3">Professioneel</h5>
-                                <p class="card-text text-muted">Ervaren IT-specialisten</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0">
-                            <div class="card-body text-center">
-                                <i class="bi bi-clock-history text-primary" style="font-size: 3rem;"></i>
-                                <h5 class="card-title mt-3">24/7 Bereikbaar</h5>
-                                <p class="card-text text-muted">Altijd en overal uw tickets inzien</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- Hero Section -->
+<section class="hero-section">
+    <!-- Animated gradient orbs -->
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
 
-                {% if user %}
-                    <a href="/tickets/new" class="btn btn-primary btn-lg me-3">
-                        <i class="bi bi-plus-circle me-2"></i>Nieuw Ticket
-                    </a>
-                    <a href="/tickets" class="btn btn-outline-primary btn-lg">
-                        <i class="bi bi-list me-2"></i>Mijn Tickets
-                    </a>
-                {% else %}
-                    <a href="/login" class="btn btn-primary btn-lg me-3">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Inloggen
-                    </a>
-                {% endif %}
+    <div class="container hero-content">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">Fast, Smart &amp; Reliable<br>IT Repair</h1>
+                <p class="hero-subtitle">
+                    Professionele IT-support voor al uw technische vragen en problemen.
+                    Maak eenvoudig een ticket aan en wij helpen u razendsnel verder.
+                </p>
+
+                <!-- Glass CTA card -->
+                <div class="card d-inline-block px-4 py-3 mb-2 fade-up" style="display: inline-block !important;">
+                    {% if user %}
+                        <a href="/tickets/new" class="btn btn-primary btn-lg me-3">
+                            <i class="bi bi-plus-circle me-2"></i>Nieuw Ticket
+                        </a>
+                        <a href="/tickets" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-list me-2"></i>Mijn Tickets
+                        </a>
+                    {% else %}
+                        <a href="/login" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Begin Nu &rarr;
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Service Cards -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 fade-up">
+            <h2 class="fw-bold">Onze Services</h2>
+            <p class="text-muted">Alles wat uw bedrijf nodig heeft op ICT-gebied</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4 fade-up">
+                <div class="card h-100 text-center p-4">
+                    <div class="service-icon">
+                        <i class="bi bi-pc-display"></i>
+                    </div>
+                    <h5 class="card-title">Computer Reparatie</h5>
+                    <p class="card-text">Hardware- en softwareproblemen snel en vakkundig opgelost, zowel op locatie als remote.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-up" style="transition-delay: 0.1s;">
+                <div class="card h-100 text-center p-4">
+                    <div class="service-icon">
+                        <i class="bi bi-router"></i>
+                    </div>
+                    <h5 class="card-title">Netwerk Installatie</h5>
+                    <p class="card-text">Betrouwbare netwerkinfrastructuur ontwerp, installatie en onderhoud voor uw organisatie.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-up" style="transition-delay: 0.2s;">
+                <div class="card h-100 text-center p-4">
+                    <div class="service-icon">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h5 class="card-title">Remote Support</h5>
+                    <p class="card-text">Directe hulp op afstand via ons ticketsysteem. Geen wachttijd, gewoon inloggen en aanmelden.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Indicators -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4 fade-up">
+                <div class="card stat-card">
+                    <div class="stat-number">24h</div>
+                    <div class="stat-label"><i class="bi bi-lightning-charge me-1"></i>Snelle Reactie</div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-up" style="transition-delay: 0.1s;">
+                <div class="card stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label"><i class="bi bi-shield-check me-1"></i>Professioneel</div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-up" style="transition-delay: 0.2s;">
+                <div class="card stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label"><i class="bi bi-clock-history me-1"></i>Bereikbaar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
