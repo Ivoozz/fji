@@ -6,15 +6,15 @@ Eenvoudig ticketsysteem voor IT-support, gebouwd met FastAPI.
 
 ```bash
 # Download en run installer
-curl -fsSL https://raw.githubusercontent.com/Ivoozz/fixjeictv2/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/Ivoozz/fji/main/install.sh | sudo bash
 ```
 
 Of handmatig:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Ivoozz/fixjeictv2.git /opt/fixjeictv2
-cd /opt/fixjeictv2
+git clone https://github.com/Ivoozz/fji.git /opt/fji
+cd /opt/fji
 
 # 2. Setup environment
 python3 -m venv venv
