@@ -112,6 +112,23 @@ if [ -t 0 ] && [ -z "${CI:-}" ]; then
     read -rp "  Cloudflare API token: " CLOUDFLARE_API_TOKEN
     read -rp "  Cloudflare Account ID: " CLOUDFLARE_ACCOUNT_ID
     read -rp "  Cloudflare Zone ID: " CLOUDFLARE_ZONE_ID
+
+    echo ""
+    echo "[4/4] Configuring API keys..."
+    while true; do
+        read -rp "  Telegram Bot Token (required): " TELEGRAM_BOT_TOKEN
+        if [[ -n "$TELEGRAM_BOT_TOKEN" ]]; then
+            break
+        fi
+        echo "  Token cannot be empty. Please try again."
+    done
+    while true; do
+        read -rp "  OpenRouter API Key (required): " OPENROUTER_API_KEY
+        if [[ -n "$OPENROUTER_API_KEY" ]]; then
+            break
+        fi
+        echo "  Key cannot be empty. Please try again."
+    done
 else
     # Non-interactive mode: use env vars or safe defaults
     ADMIN_USERNAME="${ADMIN_USERNAME:-admin}"
@@ -123,6 +140,8 @@ else
     CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN:-}"
     CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-}"
     CLOUDFLARE_ZONE_ID="${CLOUDFLARE_ZONE_ID:-}"
+    TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
+    OPENROUTER_API_KEY="${OPENROUTER_API_KEY:-}"
 fi
 
 success "Generated SECRET_KEY"
@@ -152,6 +171,10 @@ EMAIL_DOMAIN=${EMAIL_DOMAIN}
 CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
 CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
 CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+
+# API Keys
+TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
 EOF
 
 chmod 600 .env
