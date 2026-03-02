@@ -4,25 +4,25 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="d-flex align-items-center mb-4">
+            <div class="d-flex align-items-center mb-4 fade-up">
                 <a href="/tickets" class="btn btn-outline-secondary btn-sm me-3">
                     <i class="bi bi-arrow-left"></i>
                 </a>
-                <h1 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Nieuw Ticket</h1>
+                <h1 class="mb-0"><i class="bi bi-plus-circle me-2" style="color: var(--accent-cyan);"></i>Nieuw Ticket</h1>
             </div>
 
             {% if error %}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger fade-up">
                     <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
                 </div>
             {% endif %}
 
-            <div class="card">
+            <div class="card fade-up">
                 <div class="card-body p-4">
                     <form method="post" action="/tickets/new">
                         <div class="mb-3">
                             <label for="subject" class="form-label">Onderwerp *</label>
-                            <input type="text" class="form-control" id="subject" name="subject" 
+                            <input type="text" class="form-control" id="subject" name="subject"
                                    placeholder="Kort onderwerp van uw probleem" required>
                         </div>
 
@@ -52,8 +52,8 @@
 
                         <div class="mb-4">
                             <label for="description" class="form-label">Beschrijving *</label>
-                            <textarea class="form-control" id="description" name="description" 
-                                      rows="6" placeholder="Beschrijf uw probleem zo gedetailleerd mogelijk..." 
+                            <textarea class="form-control" id="description" name="description"
+                                      rows="6" placeholder="Beschrijf uw probleem zo gedetailleerd mogelijk..."
                                       required></textarea>
                             <div class="form-text">
                                 <i class="bi bi-info-circle me-1"></i>

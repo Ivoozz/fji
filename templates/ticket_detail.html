@@ -2,17 +2,17 @@
 
 {% block content %}
 <div class="container">
-    <div class="d-flex align-items-center mb-4">
+    <div class="d-flex align-items-center mb-4 fade-up">
         <a href="/tickets" class="btn btn-outline-secondary btn-sm me-3">
             <i class="bi bi-arrow-left"></i>
         </a>
-        <h1 class="mb-0">Ticket #{{ ticket.ticket_number }}</h1>
+        <h1 class="mb-0">Ticket <span style="color: var(--accent-cyan);">#{{ ticket.ticket_number }}</span></h1>
     </div>
 
     <div class="row">
         <div class="col-lg-8">
             <!-- Ticket Details -->
-            <div class="card mb-4">
+            <div class="card mb-4 fade-up">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ ticket.subject }}</h5>
                     <span class="badge bg-{{ ticket.status | status_color }}">
@@ -32,17 +32,17 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <hr>
-                    
+
                     <div class="mb-3">
                         <small class="text-muted d-block mb-2">Beschrijving</small>
-                        <p class="mb-0" style="white-space: pre-wrap;">{{ ticket.description }}</p>
+                        <p class="mb-0" style="white-space: pre-wrap; color: var(--text-primary);">{{ ticket.description }}</p>
                     </div>
-                    
+
                     <hr>
-                    
-                    <div class="row text-muted small">
+
+                    <div class="row small ticket-meta">
                         <div class="col-sm-6">
                             <i class="bi bi-calendar me-1"></i>
                             Aangemaakt: {{ ticket.created_at | datetime }}
@@ -56,9 +56,9 @@
             </div>
 
             <!-- Comments -->
-            <div class="card">
+            <div class="card fade-up" style="transition-delay: 0.1s;">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Reacties</h5>
+                    <h5 class="mb-0"><i class="bi bi-chat-dots me-2" style="color: var(--accent-cyan);"></i>Reacties</h5>
                 </div>
                 <div class="card-body">
                     {% if comments %}
@@ -66,8 +66,8 @@
                             {% for comment in comments %}
                                 <div class="d-flex mb-3">
                                     <div class="flex-shrink-0">
-                                        <div class="rounded-circle bg-{{ 'primary' if comment.author_type == 'admin' else 'secondary' }} text-white d-flex align-items-center justify-content-center" 
-                                             style="width: 40px; height: 40px;">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                             style="width: 40px; height: 40px; background: {% if comment.author_type == 'admin' %}linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)){% else %}rgba(100,116,139,0.3){% endif %}; color: white;">
                                             <i class="bi bi-{{ 'headset' if comment.author_type == 'admin' else 'person' }}"></i>
                                         </div>
                                     </div>
@@ -76,7 +76,7 @@
                                             <h6 class="mb-0">{{ comment.author_name }}</h6>
                                             <small class="text-muted">{{ comment.created_at | datetime }}</small>
                                         </div>
-                                        <p class="mb-0 mt-1" style="white-space: pre-wrap;">{{ comment.content }}</p>
+                                        <p class="mb-0 mt-1" style="white-space: pre-wrap; color: var(--text-secondary);">{{ comment.content }}</p>
                                     </div>
                                 </div>
                                 {% if not loop.last %}<hr>{% endif %}
@@ -91,7 +91,7 @@
                         <form method="post" action="/tickets/{{ ticket.id }}/comment">
                             <div class="mb-3">
                                 <label for="content" class="form-label">Reactie toevoegen</label>
-                                <textarea class="form-control" id="content" name="content" 
+                                <textarea class="form-control" id="content" name="content"
                                           rows="3" placeholder="Typ uw reactie..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">
@@ -105,14 +105,14 @@
 
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <div class="card">
+            <div class="card fade-up" style="transition-delay: 0.15s;">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informatie</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2" style="color: var(--accent-cyan);"></i>Informatie</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <small class="text-muted d-block">Ticketnummer</small>
-                        <strong>{{ ticket.ticket_number }}</strong>
+                        <strong style="color: var(--accent-cyan);">{{ ticket.ticket_number }}</strong>
                     </div>
                     <div class="mb-3">
                         <small class="text-muted d-block">Status</small>
@@ -133,8 +133,8 @@
                     {% if ticket.resolved_at %}
                         <div class="mb-0">
                             <small class="text-muted d-block">Opgelost op</small>
-                            <i class="bi bi-check-circle-fill text-success me-1"></i>
-                            {{ ticket.resolved_at | datetime }}
+                            <i class="bi bi-check-circle-fill me-1" style="color: var(--color-success);"></i>
+                            <span style="color: var(--color-success);">{{ ticket.resolved_at | datetime }}</span>
                         </div>
                     {% endif %}
                 </div>
