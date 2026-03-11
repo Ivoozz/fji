@@ -5,48 +5,152 @@
 <section class="container mb-5">
     <div class="glass-card p-5 text-center overflow-hidden position-relative">
         <div class="row align-items-center py-5">
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-10 mx-auto">
                 <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">
-                    <i class="bi bi-stars me-1"></i> Nieuwe generatie IT Support
+                    <i class="bi bi-stars me-1"></i> De nieuwe standaard in IT-ondersteuning
                 </span>
-                <h1 class="display-3 mb-4">Wij maken <span class="text-gradient">ICT weer eenvoudig</span></h1>
-                <p class="lead text-muted mb-5">FixJeICT biedt razendsnelle ondersteuning, slimme ticketsystemen en proactief cloudbeheer. Zodat u zich kunt focussen op wat echt belangrijk is.</p>
+                <h1 class="display-3 mb-4 fw-bold">Uw ICT partner voor <span class="text-gradient">zorgeloos ondernemen</span></h1>
+                <p class="lead text-muted mb-5 fs-4">FixJeICT combineert menselijke expertise met moderne techniek. Wij lossen uw IT-problemen op voordat u ze merkt, zodat u zich kunt focussen op uw passie.</p>
                 
                 <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
                     {% if not user %}
-                    <a href="/login" class="btn btn-primary btn-lg px-5 shadow">Start nu gratis</a>
+                    <a href="/login" class="btn btn-primary btn-lg px-5 shadow rounded-pill">Direct Hulp Nodig?</a>
                     {% else %}
-                    <a href="/tickets/new" class="btn btn-primary btn-lg px-5 shadow">Nieuw Ticket Aanmaken</a>
+                    <a href="/tickets/new" class="btn btn-primary btn-lg px-5 shadow rounded-pill">Nieuw Ticket Aanmaken</a>
                     {% endif %}
-                    <a href="/services" class="btn btn-outline-dark btn-lg px-5">Onze Diensten</a>
+                    <a href="/services" class="btn btn-outline-dark btn-lg px-5 rounded-pill">Ontdek Onze Diensten</a>
+                </div>
+
+                <div class="mt-5 pt-4">
+                    <p class="small text-uppercase tracking-wider text-muted fw-bold mb-3">Vertrouwd door 500+ professionals</p>
+                    <div class="d-flex justify-content-center gap-4 opacity-50 grayscale">
+                        <i class="bi bi-building fs-3"></i>
+                        <i class="bi bi-laptop fs-3"></i>
+                        <i class="bi bi-rocket-takeoff fs-3"></i>
+                        <i class="bi bi-shield-check fs-3"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Features Grid -->
+<!-- Kernwaarden Section -->
 <section class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="h1 fw-bold">Waarom kiezen voor <span class="text-primary">FixJeICT?</span></h2>
+        <p class="text-muted">Wij doen het anders dan de traditionele, trage IT-partijen.</p>
+    </div>
     <div class="row g-4">
         <div class="col-md-4">
             <div class="glass-card p-4 h-100">
                 <div class="mb-3 text-primary fs-1"><i class="bi bi-lightning-charge"></i></div>
-                <h4>Snel & Effectief</h4>
-                <p class="text-muted">Geen lange wachttijden. Onze experts reageren binnen no-time op uw aanvraag.</p>
+                <h3 class="h4">Razendsnelle Respons</h3>
+                <p class="text-muted small">Gemiddelde reactietijd van slechts 15 minuten. Wij begrijpen dat stilstand geld kost en reageren direct op uw kritieke meldingen.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="glass-card p-4 h-100 border-primary border-opacity-25">
                 <div class="mb-3 text-primary fs-1"><i class="bi bi-shield-lock"></i></div>
-                <h4>Veiligheid Eerst</h4>
-                <p class="text-muted">Uw data en privacy zijn onze prioriteit. Alles wordt versleuteld en veilig opgeslagen.</p>
+                <h3 class="h4">Security-First</h3>
+                <p class="text-muted small">Alles wat wij doen is doordrenkt met beveiliging. Van versleutelde wachtwoordopslag tot proactieve monitoring tegen dreigingen.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="glass-card p-4 h-100">
-                <div class="mb-3 text-primary fs-1"><i class="bi bi-cloud-check"></i></div>
-                <h4>Altijd Beschikbaar</h4>
-                <p class="text-muted">Uw ticketsysteem is 24/7 bereikbaar via elk apparaat, waar u ook bent.</p>
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-heart-pulse"></i></div>
+                <h3 class="h4">Menselijke Support</h3>
+                <p class="text-muted small">Geen keuzemenu's of onbegrijpelijk vakjargon. U spreekt direct met een deskundige 'Fixer' die uw taal begrijpt.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hoe het werkt Section -->
+<section class="container py-5 bg-white bg-opacity-25 rounded-5 my-5">
+    <div class="row align-items-center p-5">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="display-5 fw-bold mb-4">In 3 stappen <br><span class="text-primary">weer online</span></h2>
+            <p class="text-muted mb-4">Ons proces is gestroomlijnd om u zo min mogelijk tijd te kosten. Geen gedoe, gewoon resultaat.</p>
+            
+            <div class="d-flex mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">1</div>
+                <div>
+                    <h5 class="fw-bold">Meld uw probleem aan</h5>
+                    <p class="text-muted small">Log in via uw e-mail en maak binnen 30 seconden een ticket aan met uw vraag of probleem.</p>
+                </div>
+            </div>
+            
+            <div class="d-flex mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">2</div>
+                <div>
+                    <h5 class="fw-bold">Directe Analyse door een Fixer</h5>
+                    <p class="text-muted small">Een van onze experts pakt uw melding op, stelt indien nodig verduidelijkende vragen en start de oplossing.</p>
+                </div>
+            </div>
+            
+            <div class="d-flex">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">3</div>
+                <div>
+                    <h5 class="fw-bold">Fix en Validatie</h5>
+                    <p class="text-muted small">Het probleem wordt opgelost en u krijgt een helder overzicht van de werkzaamheden. Pas als u tevreden bent, sluiten we het ticket.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="glass-card p-4 text-center">
+                <i class="bi bi-patch-check-fill text-primary display-1"></i>
+                <h4 class="mt-3">Gegarandeerde Resolutie</h4>
+                <p class="text-muted px-4">Wij rusten niet voordat uw probleem volledig is verholpen. Dat is de FixJeICT belofte.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Preview -->
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Veelgestelde Vragen</h2>
+    </div>
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="accordion accordion-flush glass-card overflow-hidden" id="faqAccordion">
+                <div class="accordion-item bg-transparent">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Is FixJeICT ook beschikbaar voor particulieren?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Jazeker! Hoewel we veel voor het MKB werken, helpen onze Fixers ook graag particulieren met computerproblemen, netwerkinstellingen of beveiligingsvragen.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-transparent">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Hoe werkt de betaling voor support?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Wij werken op basis van een scherp uurtarief of via vaste onderhoudscontracten voor bedrijven. U ontvangt na afloop van elk ticket een duidelijke factuur.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-transparent border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Moet ik software installeren voor hulp op afstand?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            In de meeste gevallen maken we gebruik van een beveiligde tool voor hulp op afstand. Onze Fixer zal u stap voor stap begeleiden bij de eenmalige start hiervan.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -57,22 +161,28 @@
     <div class="glass-card p-5">
         <div class="row text-center g-4">
             <div class="col-6 col-md-3">
-                <h2 class="display-6 fw-bold">99%</h2>
-                <p class="text-muted mb-0">Tevredenheid</p>
+                <h2 class="display-6 fw-bold text-primary">99.8%</h2>
+                <p class="text-muted mb-0">Uptime Garantie</p>
             </div>
             <div class="col-6 col-md-3">
-                <h2 class="display-6 fw-bold">15min</h2>
-                <p class="text-muted mb-0">Gem. Reactietijd</p>
+                <h2 class="display-6 fw-bold text-primary">15min</h2>
+                <p class="text-muted mb-0">Reactietijd</p>
             </div>
             <div class="col-6 col-md-3">
-                <h2 class="display-6 fw-bold">1k+</h2>
-                <p class="text-muted mb-0">Opgeloste Tickets</p>
+                <h2 class="display-6 fw-bold text-primary">2.5k+</h2>
+                <p class="text-muted mb-0">Tickets per jaar</p>
             </div>
             <div class="col-6 col-md-3">
-                <h2 class="display-6 fw-bold">24/7</h2>
-                <p class="text-muted mb-0">Monitoring</p>
+                <h2 class="display-6 fw-bold text-primary">4.9/5</h2>
+                <p class="text-muted mb-0">Klantwaardering</p>
             </div>
         </div>
     </div>
+</section>
+
+<!-- Final CTA -->
+<section class="container py-5 text-center">
+    <h2 class="display-6 fw-bold mb-4">Klaar om uw ICT-zorgen te beëindigen?</h2>
+    <a href="/login" class="btn btn-primary btn-lg px-5 shadow rounded-pill">Start Vandaag Nog</a>
 </section>
 {% endblock %}
