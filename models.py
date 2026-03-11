@@ -16,11 +16,13 @@ class User(Base):
     phone = Column(String(50), nullable=True)
     company = Column(String(255), nullable=True)
     forward_email = Column(String(255), nullable=True)  # Auto-generated Cloudflare alias (e.g., username@fixjeict.nl)
+    role = Column(String(50), default="user")  # "user" or "admin"
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     tickets = relationship("Ticket", back_populates="user", cascade="all, delete-orphan")
     magic_links = relationship("MagicLink", back_populates="user", cascade="all, delete-orphan")
+    audit_logs = relationship("AuditLog", back_populates="user", cascade="all, delete-orphan")
 
 
 class Ticket(Base):
@@ -40,6 +42,7 @@ class Ticket(Base):
     
     user = relationship("User", back_populates="tickets")
     comments = relationship("Comment", back_populates="ticket", cascade="all, delete-orphan")
+    attachments = relationship("Attachment", back_populates="ticket", cascade="all, delete-orphan")
 
 
 class Comment(Base):
@@ -54,6 +57,32 @@ class Comment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     ticket = relationship("Ticket", back_populates="comments")
+
+
+class Attachment(Base):
+    __tablename__ = "attachments"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
+    filename = Column(String(255), nullable=False)
+    file_path = Column(String(512), nullable=False)
+    uploaded_at = Column(DateTime, default=datetime.utcnow)
+    
+    ticket = relationship("Ticket", back_populates="attachments")
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    action = Column(String(100), nullable=False)
+    target_type = Column(String(50), nullable=True)
+    target_id = Column(String(50), nullable=True)
+    details = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    user = relationship("User", back_populates="audit_logs")
 
 
 class MagicLink(Base):
