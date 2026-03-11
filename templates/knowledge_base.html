@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-gradient">Knowledge Base</h1>
+        <p class="lead text-muted">Vind antwoorden op veelgestelde vragen en technische handleidingen.</p>
+        
+        <div class="max-width-600 mx-auto mt-4">
+            <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0" placeholder="Zoek in artikelen...">
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Category 1 -->
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="mb-3 text-primary"><i class="bi bi-shield-lock me-2"></i>Account & Beveiliging</h4>
+                <div class="list-group list-group-flush bg-transparent">
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Hoe stel ik Two-Factor Authentication in?
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Wachtwoord vergeten: Wat nu?
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Veilig werken in openbare Wi-Fi netwerken.
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 2 -->
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="mb-3 text-primary"><i class="bi bi-envelope-at me-2"></i>E-mail & Cloud</h4>
+                <div class="list-group list-group-flush bg-transparent">
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Outlook instellen op uw mobiele telefoon.
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Bestanden delen via OneDrive/Google Drive.
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Spam en phishing herkennen.
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 3 -->
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="mb-3 text-primary"><i class="bi bi-pc-display me-2"></i>Hardware & Randapparatuur</h4>
+                <div class="list-group list-group-flush bg-transparent">
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Mijn printer print niet, wat kan ik doen?
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Het aansluiten van een docking station.
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 4 -->
+        <div class="col-md-6">
+            <div class="glass-card p-4">
+                <h4 class="mb-3 text-primary"><i class="bi bi-ticket-perforated me-2"></i>Ticketsysteem Help</h4>
+                <div class="list-group list-group-flush bg-transparent">
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Hoe maak ik een effectief ticket aan?
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent border-0 ps-0 text-muted">
+                        <i class="bi bi-file-earmark-text me-2"></i>Bijlagen toevoegen aan een bestaand ticket.
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

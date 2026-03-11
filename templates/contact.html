@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-5">
+            <h1 class="display-5 fw-bold mb-4">Neem Contact Op</h1>
+            <p class="lead text-muted mb-5">Heeft u een vraag of wilt u een kennismakingsgesprek? Wij horen graag van u.</p>
+            
+            <div class="d-flex mb-4">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                    <i class="bi bi-geo-alt text-primary fs-4"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1">Locatie</h5>
+                    <p class="text-muted">Tech Campus, Amsterdam</p>
+                </div>
+            </div>
+
+            <div class="d-flex mb-4">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                    <i class="bi bi-envelope text-primary fs-4"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1">E-mail</h5>
+                    <p class="text-muted">support@fixjeict.nl</p>
+                </div>
+            </div>
+
+            <div class="d-flex mb-4">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                    <i class="bi bi-telephone text-primary fs-4"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1">Telefoon</h5>
+                    <p class="text-muted">+31 (0)20 123 4567</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="glass-card p-5">
+                <h3 class="mb-4">Stuur een bericht</h3>
+                <form action="#" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Naam</label>
+                            <input type="text" class="form-control" placeholder="Uw naam" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">E-mail</label>
+                            <input type="email" class="form-control" placeholder="uw@email.nl" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Onderwerp</label>
+                            <input type="text" class="form-control" placeholder="Waar gaat het over?">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Bericht</label>
+                            <textarea class="form-control" rows="5" placeholder="Uw bericht..." required></textarea>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow">Verstuur Bericht</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

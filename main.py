@@ -311,57 +311,19 @@ async def home(request: Request):
 
 @app.get("/services", response_class=HTMLResponse)
 async def services(request: Request):
-    """Services page"""
-    user = get_current_user(request)
-    return templates.TemplateResponse("base.html", {
-        "request": request,
-        "user": user,
-        "title": "Diensten"
-    })
-
+    return templates.TemplateResponse("services.html", {"request": request, "user": get_current_user(request), "title": "Diensten - FixJeICT"})
 
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
-    """About page"""
-    user = get_current_user(request)
-    return templates.TemplateResponse("base.html", {
-        "request": request,
-        "user": user,
-        "title": "Over Ons"
-    })
-
+    return templates.TemplateResponse("about.html", {"request": request, "user": get_current_user(request), "title": "Over Ons - FixJeICT"})
 
 @app.get("/contact", response_class=HTMLResponse)
 async def contact(request: Request):
-    """Contact page"""
-    user = get_current_user(request)
-    return templates.TemplateResponse("base.html", {
-        "request": request,
-        "user": user,
-        "title": "Contact"
-    })
-
-
-@app.get("/blog", response_class=HTMLResponse)
-async def blog(request: Request):
-    """Blog page"""
-    user = get_current_user(request)
-    return templates.TemplateResponse("base.html", {
-        "request": request,
-        "user": user,
-        "title": "Blog"
-    })
-
+    return templates.TemplateResponse("contact.html", {"request": request, "user": get_current_user(request), "title": "Contact - FixJeICT"})
 
 @app.get("/knowledge-base", response_class=HTMLResponse)
 async def knowledge_base(request: Request):
-    """Knowledge base page"""
-    user = get_current_user(request)
-    return templates.TemplateResponse("base.html", {
-        "request": request,
-        "user": user,
-        "title": "Knowledge Base"
-    })
+    return templates.TemplateResponse("knowledge_base.html", {"request": request, "user": get_current_user(request), "title": "Knowledge Base - FixJeICT"})
 
 
 # User Authentication Routes

@@ -1,49 +1,58 @@
 #!/bin/bash
-# FixJeICT Productie Installer
-# Dit script installeert Docker en start de FixJeICT applicatie.
+# FixJeICT - Ultieme Productie Installer [v3.0]
+# Geoptimaliseerd voor Debian/Ubuntu & Docker-first deployment.
 
 set -e
 
-echo "===================================================="
-echo "   FixJeICT - Enterprise Editie Installer"
-echo "===================================================="
+# Kleuren voor output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
 
-# 1. Check Root
+clear
+echo -e "${BLUE}====================================================${NC}"
+echo -e "${BLUE}   FixJeICT - Enterprise Edition Installer [v3.0]   ${NC}"
+echo -e "${BLUE}====================================================${NC}"
+
+# 1. Root Check
 if [ "$EUID" -ne 0 ]; then
-  echo "❌ Start dit script als root (sudo)."
+  echo -e "${RED}❌ Fout: Voer dit script uit als root (sudo).${NC}"
   exit 1
 fi
 
-# 2. Systeem updaten & Dependencies
-echo "🔄 [1/4] Systeem updaten en afhankelijkheden installeren..."
-apt-get update -qq
-apt-get install -y git curl openssl -qq
-
-# 3. Docker Installeren (indien niet aanwezig)
-if ! command -v docker &> /dev/null; then
-    echo "🐳 [2/4] Docker installeren..."
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    rm get-docker.sh
-else
-    echo "✅ [2/4] Docker is al geïnstalleerd."
+# 2. Systeem Checks
+echo -e "${BLUE}[1/5] Systeem validatie...${NC}"
+TOTAL_RAM=$(free -m | awk '/^Mem:/{print $2}')
+if [ "$TOTAL_RAM" -lt 1024 ]; then
+    echo -e "⚠️  Waarschuwing: Minder dan 1GB RAM gedetecteerd ($TOTAL_RAM MB). Performance kan lager zijn."
 fi
 
-# Docker Compose check
+# 3. Dependencies Installeren
+echo -e "${BLUE}[2/5] Benodigde pakketten installeren...${NC}"
+apt-get update -qq
+apt-get install -y git curl openssl ufw -qq
+
+# 4. Docker & Compose Installeren
+echo -e "${BLUE}[3/5] Docker stack voorbereiden...${NC}"
+if ! command -v docker &> /dev/null; then
+    curl -fsSL https://get.docker.com | sh
+else
+    echo "✅ Docker is reeds aanwezig."
+fi
+
 if ! command -v docker-compose &> /dev/null; then
-    echo "🐳 [3/4] Docker Compose installeren..."
     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
 else
-    echo "✅ [3/4] Docker Compose is al geïnstalleerd."
+    echo "✅ Docker Compose is reeds aanwezig."
 fi
 
-# 4. Applicatie Uitrollen
-INSTALL_DIR="/opt/fixjeict"
-echo "🚀 [4/4] Applicatie uitrollen naar $INSTALL_DIR..."
+# 5. Deployment
+INSTALL_DIR="/opt/fji"
+echo -e "${BLUE}[4/5] Applicatie uitrollen naar $INSTALL_DIR...${NC}"
 
 if [ -d "$INSTALL_DIR" ]; then
-    echo "⚠️ Map $INSTALL_DIR bestaat al. Updaten..."
     cd "$INSTALL_DIR"
     git fetch --all
     git reset --hard origin/main
@@ -52,11 +61,27 @@ else
     cd "$INSTALL_DIR"
 fi
 
-# Start script uitvoeren
+# Automatische .env generatie voor productie
+if [ ! -f .env ]; then
+    echo -e "${BLUE}[5/5] Beveiliging configureren...${NC}"
+    DB_PASS=$(openssl rand -hex 16)
+    cp .env.example .env 2>/dev/null || touch .env
+    echo "POSTGRES_PASSWORD=$DB_PASS" >> .env
+    echo "DATABASE_URL=postgresql://fji_user:$DB_PASS@db:5432/fji_db" >> .env
+fi
+
+# Rechten goedzetten
 chmod +x start-production.sh
+mkdir -p data/uploads
+chmod -R 777 data/uploads
+
+# Starten
 ./start-production.sh
 
-echo "===================================================="
-echo "🎉 Installatie Voltooid!"
-echo "➡️  Open je browser en navigeer naar http://<jouw-server-ip>:8000/setup"
-echo "===================================================="
+echo -e "${GREEN}====================================================${NC}"
+echo -e "${GREEN}🎉 Installatie Succesvol!${NC}"
+echo -e "FixJeICT draait nu in de achtergrond via Docker."
+echo ""
+echo -e "📍 URL: http://$(hostname -I | awk '{print $1}'):8000"
+echo -e "⚙️  Setup: Ga direct naar /setup om de app te configureren."
+echo -e "${GREEN}====================================================${NC}"

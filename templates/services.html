@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-gradient">Onze Diensten</h1>
+        <p class="lead text-muted">Professionele IT-oplossingen op maat voor elke onderneming.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Service 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-laptop"></i></div>
+                <h3 class="h4">Managed Werkplek</h3>
+                <p class="text-muted">Wij beheren uw laptops, desktops en mobiele apparaten op afstand. Altijd up-to-date, veilig en klaar voor gebruik.</p>
+                <ul class="list-unstyled small text-muted">
+                    <li><i class="bi bi-check2 text-primary me-2"></i>24/7 Monitoring</li>
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Software Updates</li>
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Remote Support</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100 border-primary border-opacity-25">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-cloud-arrow-up"></i></div>
+                <h3 class="h4">Cloud Oplossingen</h3>
+                <p class="text-muted">Migreer naar de cloud met Microsoft 365 of Google Workspace. Werk overal ter wereld samen met uw team.</p>
+                <ul class="list-unstyled small text-muted">
+                    <li><i class="bi bi-check2 text-primary me-2"></i>E-mail Migratie</li>
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Cloud Opslag</li>
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Teams/Slack Setup</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-shield-check"></i></div>
+                <h3 class="h4">Cybersecurity</h3>
+                <p class="text-muted">Bescherm uw bedrijfsgegevens tegen ransomware en phishing. Wij implementeren de nieuwste beveiligingsstandaarden.</p>
+                <ul class="list-unstyled small text-muted">
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Endpoint Protection</li>
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Phishing Training</li>
+                    <li><i class="bi bi-check2 text-primary me-2"></i>Password Management</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-hdd-network"></i></div>
+                <h3 class="h4">Netwerkbeheer</h3>
+                <p class="text-muted">Een stabiel en snel netwerk is de ruggengraat van uw bedrijf. Wij regelen uw Wi-Fi, routers en firewalls.</p>
+            </div>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-chat-dots"></i></div>
+                <h3 class="h4">IT Consultancy</h3>
+                <p class="text-muted">Strategisch advies over uw IT-landschap. Wij helpen u de juiste keuzes te maken voor de toekomst.</p>
+            </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100 bg-primary bg-opacity-10">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-headset"></i></div>
+                <h3 class="h4">On-Demand Support</h3>
+                <p class="text-muted">Heeft u direct hulp nodig? Maak een ticket aan en een van onze Fixers schiet direct te hulp.</p>
+                <a href="/tickets/new" class="btn btn-primary btn-sm rounded-pill mt-2">Open een Ticket</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
