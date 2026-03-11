@@ -1,6 +1,7 @@
 #!/bin/bash
-# FixJeICT - Ultieme Productie Installer [v3.0]
-# Geoptimaliseerd voor Debian/Ubuntu & Docker-first deployment.
+# FixJeICT - LXC Native Production Installer [v4.0]
+# Geoptimaliseerd voor Debian 12 (Bookworm) / Debian Trixie LXC.
+# Geen Docker nesting - Maximale performance.
 
 set -e
 
@@ -12,7 +13,7 @@ NC='\033[0m'
 
 clear
 echo -e "${BLUE}====================================================${NC}"
-echo -e "${BLUE}   FixJeICT - Enterprise Edition Installer [v3.0]   ${NC}"
+echo -e "${BLUE}   FixJeICT - LXC Enterprise Installer [v4.0]      ${NC}"
 echo -e "${BLUE}====================================================${NC}"
 
 # 1. Root Check
@@ -21,36 +22,25 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# 2. Systeem Checks
-echo -e "${BLUE}[1/5] Systeem validatie...${NC}"
-TOTAL_RAM=$(free -m | awk '/^Mem:/{print $2}')
-if [ "$TOTAL_RAM" -lt 1024 ]; then
-    echo -e "⚠️  Waarschuwing: Minder dan 1GB RAM gedetecteerd ($TOTAL_RAM MB). Performance kan lager zijn."
-fi
-
-# 3. Dependencies Installeren
-echo -e "${BLUE}[2/5] Benodigde pakketten installeren...${NC}"
+# 2. Systeem Afhankelijkheden
+echo -e "${BLUE}[1/6] Systeem pakketten installeren...${NC}"
 apt-get update -qq
-apt-get install -y git curl openssl ufw -qq
+apt-get install -y python3-pip python3-venv postgresql postgresql-contrib nginx git curl openssl ufw -qq
 
-# 4. Docker & Compose Installeren
-echo -e "${BLUE}[3/5] Docker stack voorbereiden...${NC}"
-if ! command -v docker &> /dev/null; then
-    curl -fsSL https://get.docker.com | sh
-else
-    echo "✅ Docker is reeds aanwezig."
-fi
+# 3. PostgreSQL Configuratie
+echo -e "${BLUE}[2/6] Database configureren...${NC}"
+DB_NAME="fji_db"
+DB_USER="fji_user"
+DB_PASS=$(openssl rand -hex 16)
 
-if ! command -v docker-compose &> /dev/null; then
-    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-else
-    echo "✅ Docker Compose is reeds aanwezig."
-fi
+# PostgreSQL gebruiker en DB aanmaken (indien niet aanwezig)
+sudo -u postgres psql -c "CREATE DATABASE $DB_NAME;" || true
+sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASS';" || true
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;" || true
 
-# 5. Deployment
+# 4. Applicatie Setup
 INSTALL_DIR="/opt/fji"
-echo -e "${BLUE}[4/5] Applicatie uitrollen naar $INSTALL_DIR...${NC}"
+echo -e "${BLUE}[3/6] Applicatie installeren in $INSTALL_DIR...${NC}"
 
 if [ -d "$INSTALL_DIR" ]; then
     cd "$INSTALL_DIR"
@@ -61,27 +51,77 @@ else
     cd "$INSTALL_DIR"
 fi
 
-# Automatische .env generatie voor productie
-if [ ! -f .env ]; then
-    echo -e "${BLUE}[5/5] Beveiliging configureren...${NC}"
-    DB_PASS=$(openssl rand -hex 16)
-    cp .env.example .env 2>/dev/null || touch .env
-    echo "POSTGRES_PASSWORD=$DB_PASS" >> .env
-    echo "DATABASE_URL=postgresql://fji_user:$DB_PASS@db:5432/fji_db" >> .env
-fi
+# Venv en Requirements
+python3 -m venv venv
+./venv/bin/pip install --upgrade pip -q
+./venv/bin/pip install -r requirements.txt -q
 
-# Rechten goedzetten
-chmod +x start-production.sh
+# .env genereren
+cat <<EOF > .env
+DATABASE_URL=postgresql://$DB_USER:$DB_PASS@localhost:5432/$DB_NAME
+ENCRYPTION_KEY=$(openssl rand -base64 32)
+APP_URL=http://$(hostname -I | awk '{print $1}')
+EOF
+
+# Directories en Rechten
 mkdir -p data/uploads
-chmod -R 777 data/uploads
+chmod -R 775 data/uploads
+chown -R www-data:www-data "$INSTALL_DIR"
 
-# Starten
-./start-production.sh
+# 5. Systemd Service aanmaken
+echo -e "${BLUE}[4/6] Systemd service configureren...${NC}"
+cat <<EOF > /etc/systemd/system/fji.service
+[Unit]
+Description=FixJeICT FastAPI Application
+After=network.target postgresql.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=$INSTALL_DIR
+Environment="PATH=$INSTALL_DIR/venv/bin"
+ExecStart=$INSTALL_DIR/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --proxy-headers
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable fji
+systemctl restart fji
+
+# 6. Nginx Reverse Proxy
+echo -e "${BLUE}[5/6] Nginx webserver configureren...${NC}"
+cat <<EOF > /etc/nginx/sites-available/fji
+server {
+    listen 80;
+    server_name _;
+
+    client_max_body_size 50M;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location /static {
+        alias $INSTALL_DIR/static;
+    }
+}
+EOF
+
+ln -sf /etc/nginx/sites-available/fji /etc/nginx/sites-enabled/
+rm -f /etc/nginx/sites-enabled/default
+systemctl restart nginx
 
 echo -e "${GREEN}====================================================${NC}"
-echo -e "${GREEN}🎉 Installatie Succesvol!${NC}"
-echo -e "FixJeICT draait nu in de achtergrond via Docker."
+echo -e "${GREEN}🎉 Native LXC Installatie Succesvol!${NC}"
+echo -e "Performance geoptimaliseerd voor bare-metal Debian."
 echo ""
-echo -e "📍 URL: http://$(hostname -I | awk '{print $1}'):8000"
-echo -e "⚙️  Setup: Ga direct naar /setup om de app te configureren."
+echo -e "📍 URL: http://$(hostname -I | awk '{print $1}')"
+echo -e "⚙️  Setup: Ga direct naar /setup om te beginnen."
 echo -e "${GREEN}====================================================${NC}"

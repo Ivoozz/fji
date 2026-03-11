@@ -1,57 +1,58 @@
-# FixJeICT Enterprise
+# FixJeICT Enterprise (LXC Native)
 
-Een robuust, modern en snel ticketsysteem gebouwd voor IT-dienstverleners. Gemaakt met FastAPI, PostgreSQL, en een SEO-geoptimaliseerde "Liquid Glass" frontend.
+Een professioneel, modern en razendsnel ticketsysteem gebouwd voor IT-dienstverleners. Geoptimaliseerd voor directe uitvoering op **Debian LXC** containers voor maximale performance en minimale latency.
 
-![SaaS Ready](https://img.shields.io/badge/Status-Productie_Klaar-success)
-![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
+![Bare Metal Performance](https://img.shields.io/badge/Performance-Bare_Metal-success)
+![Debian Ready](https://img.shields.io/badge/OS-Debian_12-blue)
 
 ## ✨ Kernfuncties
 
-- **Interactieve First-Run Setup:** Volledige webgebaseerde configuratie (geen `.env` bestanden lokaal aanpassen).
-- **Asynchrone E-mail & Routing:** Maakt gebruik van Resend API en Cloudflare Email Routing in de achtergrond (Non-blocking).
-- **Beveiligde Opslag (AES):** Gevoelige API-sleutels worden versleuteld (Fernet) opgeslagen in de database.
-- **Rollen en Rechten (RBAC):**
-  - **Gebruiker:** Kan tickets aanmaken, reageren en bijlagen uploaden.
-  - **Fixer:** IT-support medewerker. Kan alle tickets beheren en interne notities toevoegen, maar geen systeeminstellingen wijzigen.
-  - **Admin:** Volledige systeemtoegang (inclusief API instellingen en gebruikersbeheer).
-- **Bestandsbijlagen:** Naadloze file-uploads gekoppeld aan support tickets.
-- **Liquid Glass UI:** Een moderne, responsieve en aantrekkelijke gebruikersinterface.
+- **LXC Optimized:** Geen Docker nesting of overhead. Draait direct op Debian met Systemd en Nginx.
+- **Interactieve First-Run Setup:** Volledige webgebaseerde configuratie (geen handmatige bewerking van configuratiebestanden nodig).
+- **Beveiligde Opslag (AES):** Gevoelige API-sleutels (Resend, Cloudflare) worden versleuteld opgeslagen in de database.
+- **Role-Based Access Control (RBAC):**
+  - **Gebruiker:** Maakt tickets aan en uploadt bijlagen.
+  - **Fixer (Support):** Beheert tickets en interne notities via het admin dashboard.
+  - **Admin:** Volledige controle over systeeminstellingen en gebruikers.
+- **Asynchrone Background Tasks:** E-mails en API-calls worden op de achtergrond verwerkt via FastAPI BackgroundTasks.
+- **Bestandsbijlagen:** Directe ondersteuning voor screenshots en documenten bij tickets.
 
-## 🚀 Snelle Installatie (Aanbevolen)
+## 🚀 Snelle Installatie (One-Line)
 
-Run het volgende commando op een frisse Linux server (Debian/Ubuntu). Dit installeert Docker en start de database + applicatie automatisch op.
+Voer het volgende commando uit in een schone Debian 12 (of Trixie) LXC container als root:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ivoozz/fji/main/install.sh | sudo bash
 ```
 
-Navigeer vervolgens naar `http://<jouw-server-ip>:8000/setup` om de configuratie af te ronden.
+Dit script doet automatisch het volgende:
+1. Installeert Python 3, PostgreSQL en Nginx.
+2. Configureert een lokale beveiligde database.
+3. Zet een Systemd service op (`fji.service`).
+4. Configureert Nginx als reverse proxy op poort 80.
 
-## 🐳 Handmatige Docker Installatie
+## 🛠 Beheer via de terminal
+
+Na installatie kun je de applicatie beheren met standaard Linux commando's:
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/Ivoozz/fji.git /opt/fji
-cd /opt/fji
+# Status bekijken
+systemctl status fji
 
-# 2. Start Productie Script
-chmod +x start-production.sh
-./start-production.sh
+# Herstarten
+systemctl restart fji
+
+# Logs inzien
+journalctl -u fji -f
 ```
 
 ## 🛠 Tech Stack
 
-- **Backend:** FastAPI (Python 3.11)
-- **Database:** PostgreSQL (via SQLAlchemy ORM)
-- **Frontend:** Jinja2 + Bootstrap 5 + Liquid Glass CSS
-- **Encryptie:** Cryptography (Fernet)
-- **Infrastructuur:** Docker & Docker Compose
-
-## 🔐 Veiligheid & Authenticatie
-
-- Magic Link login voor gebruikers en fixers (geen wachtwoorden onthouden).
-- Admin heeft een sterk (gehasht) wachtwoord voor back-up toegang.
-- Alle systeemsleutels zijn versleuteld met een eenmalig gegenereerde `ENCRYPTION_KEY`.
+- **Framework:** FastAPI (Python 3.11+)
+- **Database:** PostgreSQL (Native)
+- **Webserver:** Nginx (Reverse Proxy)
+- **Service Manager:** Systemd
+- **Frontend:** Jinja2, Bootstrap 5, Liquid Glass CSS
 
 ---
-*Gemaakt voor en door IT-professionals.*
+*Gebouwd voor IT-professionals die geen genoegen nemen met minder dan de beste performance.*
