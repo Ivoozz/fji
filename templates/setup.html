@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installatie - FixJeICT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .setup-container { max-width: 600px; margin: 40px auto; }
+        .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 1rem; }
+        .card-header { background-color: #0d6efd; color: white; border-top-left-radius: 1rem; border-top-right-radius: 1rem; padding: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container setup-container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2 class="h4 mb-0"><i class="bi bi-tools me-2"></i>FixJeICT Installatie</h2>
+                <p class="mb-0 mt-2 text-light opacity-75">Configureer uw nieuwe ticketsysteem</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="/setup">
+                    <h5 class="mb-3 text-primary border-bottom pb-2">Beheerder Account</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Admin Gebruikersnaam</label>
+                        <input type="text" name="admin_username" class="form-control" value="admin" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Admin Wachtwoord</label>
+                        <input type="password" name="admin_password" class="form-control" required>
+                    </div>
+
+                    <h5 class="mb-3 text-primary border-bottom pb-2">E-mail Integratie (Resend)</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Resend API Key</label>
+                        <input type="password" name="resend_api_key" class="form-control" placeholder="re_..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">E-mail Afzender (From Email)</label>
+                        <input type="email" name="email_from" class="form-control" placeholder="noreply@jouwdomein.nl" required>
+                    </div>
+
+                    <h5 class="mb-3 text-primary border-bottom pb-2">Cloudflare (voor E-mail Forwarding)</h5>
+                    <p class="text-muted small">Optioneel, vul in voor automatische e-mail forwarding rules. Laat leeg als u dit niet gebruikt.</p>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail Domein</label>
+                        <input type="text" name="email_domain" class="form-control" placeholder="fixjeict.nl">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cloudflare API Token</label>
+                        <input type="password" name="cloudflare_api_token" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cloudflare Zone ID</label>
+                        <input type="text" name="cloudflare_zone_id" class="form-control">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Cloudflare Account ID</label>
+                        <input type="text" name="cloudflare_account_id" class="form-control">
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Voltooi Installatie</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,26 +1,16 @@
 """Email service using Resend API and Cloudflare Email Routing"""
-import os
-
 import re
-
 import httpx
 import resend
 
-resend.api_key = os.getenv("RESEND_API_KEY", "")
-
-CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
-CLOUDFLARE_ZONE_ID = os.getenv("CLOUDFLARE_ZONE_ID", "")
-CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
-EMAIL_DOMAIN = os.getenv("EMAIL_DOMAIN", "fixjeict.nl")
-
-
-def send_magic_link_email(to_email: str, magic_link_url: str, user_name: str):
+def send_magic_link_email(to_email: str, magic_link_url: str, user_name: str, resend_api_key: str, email_from: str):
     """Send magic link login email via Resend"""
-    if not resend.api_key:
-        print(f"[WARNING] RESEND_API_KEY not set. Magic link URL: {magic_link_url}")
+    if not resend_api_key:
+        print(f"[WARNING] resend_api_key not provided. Magic link URL: {magic_link_url}")
         return None
 
-    from_email = os.getenv("EMAIL_FROM", "FixJeICT <noreply@fixjeict.nl>")
+    resend.api_key = resend_api_key
+    from_email = email_from or "FixJeICT <noreply@fixjeict.nl>"
 
     params = {
         "from": from_email,
@@ -45,12 +35,13 @@ def send_magic_link_email(to_email: str, magic_link_url: str, user_name: str):
         return None
 
 
-def send_ticket_notification(to_email: str, ticket_number: str, subject: str, user_name: str):
+def send_ticket_notification(to_email: str, ticket_number: str, subject: str, user_name: str, resend_api_key: str, email_from: str):
     """Send ticket confirmation email"""
-    if not resend.api_key:
+    if not resend_api_key:
         return None
 
-    from_email = os.getenv("EMAIL_FROM", "FixJeICT <noreply@fixjeict.nl>")
+    resend.api_key = resend_api_key
+    from_email = email_from or "FixJeICT <noreply@fixjeict.nl>"
 
     params = {
         "from": from_email,
@@ -76,70 +67,53 @@ def send_ticket_notification(to_email: str, ticket_number: str, subject: str, us
         return None
 
 
-async def create_email_forwarding(user_email: str, username: str) -> dict:
+async def create_email_forwarding(user_email: str, username: str, cf_token: str, cf_zone: str, cf_account: str, email_domain: str) -> dict:
     """
-    Create a Cloudflare Email Routing rule to forward username@fixjeict.nl to user's private email.
-
-    1. Register user's private email as destination address
-    2. Create routing rule: username@fixjeict.nl -> user_email
-
-    Returns dict with 'alias' (the @fixjeict.nl address) and 'status'.
+    Create a Cloudflare Email Routing rule to forward username@domain to user's private email.
     """
-    if not all([CLOUDFLARE_API_TOKEN, CLOUDFLARE_ZONE_ID, CLOUDFLARE_ACCOUNT_ID]):
-        print(f"[WARNING] Cloudflare API not configured. Skipping email forwarding for {user_email}")
-        return {"alias": None, "status": "skipped", "error": "Cloudflare API not configured"}
+    if not all([cf_token, cf_zone, cf_account, email_domain]):
+        print(f"[WARNING] Cloudflare API not fully configured. Skipping email forwarding for {user_email}")
+        return {"alias": None, "status": "skipped", "error": "Cloudflare API not fully configured"}
 
-    # Clean username for email alias (lowercase, only alphanumeric, dots, and hyphens)
+    # Clean username for email alias
     alias_local = username.lower().replace(" ", ".")
     alias_local = re.sub(r"[^a-z0-9.\-]", "", alias_local)
     alias_local = re.sub(r"\.{2,}", ".", alias_local)
     alias_local = alias_local.strip(".-")
     if not alias_local:
         alias_local = "user"
-    alias_email = f"{alias_local}@{EMAIL_DOMAIN}"
+    alias_email = f"{alias_local}@{email_domain}"
 
     headers = {
-        "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
+        "Authorization": f"Bearer {cf_token}",
         "Content-Type": "application/json",
     }
 
     async with httpx.AsyncClient() as client:
-        # Step 1: Add destination address (user's private email)
+        # Step 1: Add destination address
         try:
             dest_resp = await client.post(
-                f"https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/email/routing/addresses",
+                f"https://api.cloudflare.com/client/v4/accounts/{cf_account}/email/routing/addresses",
                 headers=headers,
                 json={"email": user_email},
             )
             dest_data = dest_resp.json()
-            # It's OK if destination already exists (Cloudflare error code 1032)
             if not dest_data.get("success"):
                 errors = dest_data.get("errors", [])
                 if not any(e.get("code") == 1032 for e in errors if isinstance(e, dict)):
-                    print(f"[WARNING] Cloudflare destination address creation response: {dest_data}")
+                    print(f"[WARNING] Cloudflare destination creation response: {dest_data}")
         except Exception as e:
             print(f"[ERROR] Failed to create destination address: {e}")
 
         # Step 2: Create routing rule
         try:
             rule_resp = await client.post(
-                f"https://api.cloudflare.com/client/v4/zones/{CLOUDFLARE_ZONE_ID}/email/routing/rules",
+                f"https://api.cloudflare.com/client/v4/zones/{cf_zone}/email/routing/rules",
                 headers=headers,
                 json={
-                    "actions": [
-                        {
-                            "type": "forward",
-                            "value": [user_email],
-                        }
-                    ],
+                    "actions": [{"type": "forward", "value": [user_email]}],
                     "enabled": True,
-                    "matchers": [
-                        {
-                            "field": "to",
-                            "type": "literal",
-                            "value": alias_email,
-                        }
-                    ],
+                    "matchers": [{"field": "to", "type": "literal", "value": alias_email}],
                     "name": f"FixJeICT forwarding for {username}",
                     "priority": 0,
                 },
@@ -148,7 +122,6 @@ async def create_email_forwarding(user_email: str, username: str) -> dict:
             if rule_data.get("success"):
                 return {"alias": alias_email, "status": "created"}
             else:
-                # Rule may already exist
                 errors = rule_data.get("errors", [])
                 if any(e.get("code") == 1032 for e in errors if isinstance(e, dict)):
                     return {"alias": alias_email, "status": "exists"}

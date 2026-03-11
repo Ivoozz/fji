@@ -5,64 +5,65 @@
     <h1 class="h2"><i class="bi bi-gear me-2"></i>Instellingen</h1>
 </div>
 
+{% if message %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-lg-8">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Systeem Instellingen</h5>
+                <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Systeem & API Instellingen</h5>
             </div>
             <div class="card-body">
-                <form>
+                <form method="POST" action="/admin/settings">
+                    <h6 class="text-primary mb-3 border-bottom pb-2">Beheerder Account</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Admin Gebruikersnaam</label>
+                        <input type="text" name="admin_username" class="form-control" value="{{ settings.ADMIN_USERNAME }}" required>
+                    </div>
                     <div class="mb-4">
-                        <h6 class="text-muted mb-3">E-mail Configuratie</h6>
-                        <div class="mb-3">
-                            <label class="form-label">From E-mail</label>
-                            <input type="email" class="form-control" value="noreply@fixjeict.nl">
-                            <div class="form-text">Het afzenderadres voor alle uitgaande e-mails.</div>
-                        </div>
+                        <label class="form-label">Nieuw Admin Wachtwoord <span class="text-muted small">(Laat leeg om niet te wijzigen)</span></label>
+                        <input type="password" name="admin_password" class="form-control">
                     </div>
 
-                    <hr>
-
+                    <h6 class="text-primary mb-3 border-bottom pb-2">E-mail Integratie (Resend)</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Resend API Key</label>
+                        <input type="password" name="resend_api_key" class="form-control" value="{{ settings.RESEND_API_KEY }}" required>
+                    </div>
                     <div class="mb-4">
-                        <h6 class="text-muted mb-3">Ticket Instellingen</h6>
-                        <div class="mb-3">
-                            <label class="form-label">Standaard Prioriteit</label>
-                            <select class="form-select">
-                                <option value="low">Laag</option>
-                                <option value="medium" selected>Normaal</option>
-                                <option value="high">Hoog</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Reactietijd (uren)</label>
-                            <input type="number" class="form-control" value="24">
-                        </div>
+                        <label class="form-label">E-mail Afzender (From Email)</label>
+                        <input type="email" name="email_from" class="form-control" value="{{ settings.EMAIL_FROM }}" required>
                     </div>
 
-                    <hr>
+                    <h6 class="text-primary mb-3 border-bottom pb-2">Cloudflare Email Forwarding</h6>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail Domein</label>
+                        <input type="text" name="email_domain" class="form-control" value="{{ settings.EMAIL_DOMAIN }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cloudflare API Token</label>
+                        <input type="password" name="cloudflare_api_token" class="form-control" value="{{ settings.CLOUDFLARE_API_TOKEN }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cloudflare Zone ID</label>
+                        <input type="text" name="cloudflare_zone_id" class="form-control" value="{{ settings.CLOUDFLARE_ZONE_ID }}">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Cloudflare Account ID</label>
+                        <input type="text" name="cloudflare_account_id" class="form-control" value="{{ settings.CLOUDFLARE_ACCOUNT_ID }}">
+                    </div>
 
-                    <div class="mb-0">
-                        <h6 class="text-muted mb-3">Notificaties</h6>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" checked>
-                            <label class="form-check-label">E-mail notificaties bij nieuwe tickets</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" checked>
-                            <label class="form-check-label">E-mail notificaties bij reacties</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox">
-                            <label class="form-check-label">Slack integratie</label>
-                        </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Instellingen Opslaan
+                        </button>
                     </div>
                 </form>
-            </div>
-            <div class="card-footer">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save me-2"></i>Instellingen Opslaan
-                </button>
             </div>
         </div>
     </div>
@@ -75,7 +76,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <small class="text-muted d-block">Versie</small>
-                    <strong>FixJeICT v2.0.0</strong>
+                    <strong>FixJeICT v2.0.0 (Dynamic Setup)</strong>
                 </div>
                 <div class="mb-3">
                     <small class="text-muted d-block">Framework</small>

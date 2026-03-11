@@ -2,102 +2,75 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section">
-    <!-- Animated gradient orbs -->
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-    <div class="hero-orb hero-orb-3"></div>
-
-    <div class="container hero-content">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h1 class="hero-title">Fast, Smart &amp; Reliable<br>IT Repair</h1>
-                <p class="hero-subtitle">
-                    Professionele IT-support voor al uw technische vragen en problemen.
-                    Maak eenvoudig een ticket aan en wij helpen u razendsnel verder.
-                </p>
-
-                <!-- Glass CTA card -->
-                <div class="card d-inline-block px-4 py-3 mb-2 fade-up" style="display: inline-block !important;">
-                    {% if user %}
-                        <a href="/tickets/new" class="btn btn-primary btn-lg me-3">
-                            <i class="bi bi-plus-circle me-2"></i>Nieuw Ticket
-                        </a>
-                        <a href="/tickets" class="btn btn-outline-primary btn-lg">
-                            <i class="bi bi-list me-2"></i>Mijn Tickets
-                        </a>
+<section class="container mb-5">
+    <div class="glass-card p-5 text-center overflow-hidden position-relative">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-8 mx-auto">
+                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">
+                    <i class="bi bi-stars me-1"></i> Nieuwe generatie IT Support
+                </span>
+                <h1 class="display-3 mb-4">Wij maken <span class="text-gradient">ICT weer eenvoudig</span></h1>
+                <p class="lead text-muted mb-5">FixJeICT biedt razendsnelle ondersteuning, slimme ticketsystemen en proactief cloudbeheer. Zodat u zich kunt focussen op wat echt belangrijk is.</p>
+                
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    {% if not user %}
+                    <a href="/login" class="btn btn-primary btn-lg px-5 shadow">Start nu gratis</a>
                     {% else %}
-                        <a href="/login" class="btn btn-primary btn-lg">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Begin Nu &rarr;
-                        </a>
+                    <a href="/tickets/new" class="btn btn-primary btn-lg px-5 shadow">Nieuw Ticket Aanmaken</a>
                     {% endif %}
+                    <a href="/services" class="btn btn-outline-dark btn-lg px-5">Onze Diensten</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Service Cards -->
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5 fade-up">
-            <h2 class="fw-bold">Onze Services</h2>
-            <p class="text-muted">Alles wat uw bedrijf nodig heeft op ICT-gebied</p>
+<!-- Features Grid -->
+<section class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-lightning-charge"></i></div>
+                <h4>Snel & Effectief</h4>
+                <p class="text-muted">Geen lange wachttijden. Onze experts reageren binnen no-time op uw aanvraag.</p>
+            </div>
         </div>
-
-        <div class="row g-4">
-            <div class="col-md-4 fade-up">
-                <div class="card h-100 text-center p-4">
-                    <div class="service-icon">
-                        <i class="bi bi-pc-display"></i>
-                    </div>
-                    <h5 class="card-title">Computer Reparatie</h5>
-                    <p class="card-text">Hardware- en softwareproblemen snel en vakkundig opgelost, zowel op locatie als remote.</p>
-                </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border-primary border-opacity-25">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-shield-lock"></i></div>
+                <h4>Veiligheid Eerst</h4>
+                <p class="text-muted">Uw data en privacy zijn onze prioriteit. Alles wordt versleuteld en veilig opgeslagen.</p>
             </div>
-            <div class="col-md-4 fade-up" style="transition-delay: 0.1s;">
-                <div class="card h-100 text-center p-4">
-                    <div class="service-icon">
-                        <i class="bi bi-router"></i>
-                    </div>
-                    <h5 class="card-title">Netwerk Installatie</h5>
-                    <p class="card-text">Betrouwbare netwerkinfrastructuur ontwerp, installatie en onderhoud voor uw organisatie.</p>
-                </div>
-            </div>
-            <div class="col-md-4 fade-up" style="transition-delay: 0.2s;">
-                <div class="card h-100 text-center p-4">
-                    <div class="service-icon">
-                        <i class="bi bi-headset"></i>
-                    </div>
-                    <h5 class="card-title">Remote Support</h5>
-                    <p class="card-text">Directe hulp op afstand via ons ticketsysteem. Geen wachttijd, gewoon inloggen en aanmelden.</p>
-                </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="mb-3 text-primary fs-1"><i class="bi bi-cloud-check"></i></div>
+                <h4>Altijd Beschikbaar</h4>
+                <p class="text-muted">Uw ticketsysteem is 24/7 bereikbaar via elk apparaat, waar u ook bent.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Trust Indicators -->
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4 text-center">
-            <div class="col-md-4 fade-up">
-                <div class="card stat-card">
-                    <div class="stat-number">24h</div>
-                    <div class="stat-label"><i class="bi bi-lightning-charge me-1"></i>Snelle Reactie</div>
-                </div>
+<!-- Stats Section -->
+<section class="container py-5">
+    <div class="glass-card p-5">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <h2 class="display-6 fw-bold">99%</h2>
+                <p class="text-muted mb-0">Tevredenheid</p>
             </div>
-            <div class="col-md-4 fade-up" style="transition-delay: 0.1s;">
-                <div class="card stat-card">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label"><i class="bi bi-shield-check me-1"></i>Professioneel</div>
-                </div>
+            <div class="col-6 col-md-3">
+                <h2 class="display-6 fw-bold">15min</h2>
+                <p class="text-muted mb-0">Gem. Reactietijd</p>
             </div>
-            <div class="col-md-4 fade-up" style="transition-delay: 0.2s;">
-                <div class="card stat-card">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label"><i class="bi bi-clock-history me-1"></i>Bereikbaar</div>
-                </div>
+            <div class="col-6 col-md-3">
+                <h2 class="display-6 fw-bold">1k+</h2>
+                <p class="text-muted mb-0">Opgeloste Tickets</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h2 class="display-6 fw-bold">24/7</h2>
+                <p class="text-muted mb-0">Monitoring</p>
             </div>
         </div>
     </div>
