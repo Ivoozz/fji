@@ -49,7 +49,12 @@
                 <i class="bi bi-shield-lock me-2" style="color: var(--accent-cyan);"></i>Fix<span>JeICT</span> Admin
             </a>
             <div class="d-flex align-items-center">
-                <span class="me-3" style="color: var(--text-secondary);"><i class="bi bi-person-circle me-1"></i>{{ admin_username }}</span>
+                <span class="me-3" style="color: var(--text-secondary);">
+                    <i class="bi bi-person-circle me-1"></i>{{ admin_username }}
+                    <span class="badge {% if is_admin %}bg-danger{% else %}bg-primary{% endif %} ms-1" style="font-size: 0.7em;">
+                        {% if is_admin %}Admin{% else %}Fixer{% endif %}
+                    </span>
+                </span>
                 <a href="/" class="btn btn-outline-secondary btn-sm me-2">
                     <i class="bi bi-box-arrow-up-right me-1"></i>Publieke site
                 </a>
@@ -73,9 +78,11 @@
                     <a class="nav-link {% if '/admin/users' in request.url.path %}active{% endif %}" href="/admin/users">
                         <i class="bi bi-people me-2"></i>Gebruikers
                     </a>
+                    {% if is_admin %}
                     <a class="nav-link {% if '/admin/settings' in request.url.path %}active{% endif %}" href="/admin/settings">
                         <i class="bi bi-gear me-2"></i>Instellingen
                     </a>
+                    {% endif %}
                 </div>
             </nav>
 

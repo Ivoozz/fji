@@ -111,6 +111,41 @@ def get_db_dep():
         yield db
 
 
+
+def check_staff_access(request: Request, db: Session):
+    # 1. Check Super Admin session
+    session_id = request.cookies.get("admin_session")
+    if session_id:
+        admin_session = db.query(AdminSession).filter(AdminSession.session_id == session_id, AdminSession.expires_at > datetime.utcnow()).first()
+        if admin_session:
+            return True, True  # is_staff, is_admin
+
+    # 2. Check Magic Link (User model)
+    user_id = request.cookies.get("user_id")
+    if user_id:
+        user = db.query(User).filter(User.id == int(user_id)).first()
+        if user and user.role in ["admin", "fixer"]:
+            return True, user.role == "admin"
+            
+    return False, False
+
+def get_dashboard_context(request: Request, db: Session):
+    # Check Admin Session first
+    session_id = request.cookies.get("admin_session")
+    if session_id:
+        admin_session = db.query(AdminSession).filter(AdminSession.session_id == session_id, AdminSession.expires_at > datetime.utcnow()).first()
+        if admin_session:
+            return {"name": get_setting(db, "ADMIN_USERNAME") or "Admin", "is_admin": True, "is_staff": True}
+            
+    # Check Magic Link
+    user_id = request.cookies.get("user_id")
+    if user_id:
+        user = db.query(User).filter(User.id == int(user_id)).first()
+        if user and user.role in ["admin", "fixer"]:
+            return {"name": user.name, "is_admin": user.role == "admin", "is_staff": True}
+            
+    return None
+
 # Helper functions
 def generate_ticket_number():
     """Generate unique ticket number"""
@@ -536,13 +571,13 @@ async def ticket_add_comment(request: Request, ticket_id: int, content: str = Fo
 
 @app.post("/tickets/{ticket_id}/upload")
 async def upload_attachment(request: Request, ticket_id: int, file: UploadFile = File(...)):
-    user = get_current_user(request)
-    if not user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-        
     with get_db() as db:
+        is_staff, is_admin = check_staff_access(request, db)
+        user = get_current_user(request)
+        if not is_staff and not user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
         ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-        if not ticket or (ticket.user_id != user.id and user.role == "user"):
+        if not ticket or (not is_staff and ticket.user_id != user.id):
             raise HTTPException(status_code=404, detail="Ticket not found")
             
         file_path = f"data/uploads/{ticket_id}_{file.filename}"
@@ -553,7 +588,7 @@ async def upload_attachment(request: Request, ticket_id: int, file: UploadFile =
         db.add(attachment)
         db.commit()
         
-    return {"filename": file.filename, "status": "uploaded"}
+    return RedirectResponse(url=f"/tickets/{ticket_id}" if not is_staff else f"/admin/tickets/{ticket_id}", status_code=status.HTTP_302_FOUND)
 
 # Admin Routes - Login
 @app.get("/admin/login", response_class=HTMLResponse)
@@ -631,7 +666,7 @@ async def admin_dashboard(request: Request):
     
     return templates.TemplateResponse("admin/dashboard.html", {
         "request": request,
-        "admin_username": get_setting(db, "ADMIN_USERNAME"),
+        "admin_username": ctx["name"], "is_admin": ctx["is_admin"],
         "stats": {
             "total_tickets": total_tickets,
             "open_tickets": open_tickets,
@@ -662,7 +697,7 @@ async def admin_tickets(
         query = db.query(Ticket)
         
         if status:
-            query = query.filter(Ticket.status == status)
+            query = query.filter(Ticket.status == ticket_status)
         if priority:
             query = query.filter(Ticket.priority == priority)
         if category:
@@ -677,7 +712,7 @@ async def admin_tickets(
     
     return templates.TemplateResponse("admin/tickets.html", {
         "request": request,
-        "admin_username": get_setting(db, "ADMIN_USERNAME"),
+        "admin_username": ctx["name"], "is_admin": ctx["is_admin"],
         "tickets": tickets,
         "pagination": {
             "page": page,
@@ -687,7 +722,7 @@ async def admin_tickets(
             "has_next": page < total_pages
         },
         "filters": {
-            "status": status,
+            "status": ticket_status,
             "priority": priority,
             "category": category,
             "search": search
@@ -711,7 +746,7 @@ async def admin_ticket_detail(request: Request, ticket_id: int):
     
     return templates.TemplateResponse("admin/ticket_detail.html", {
         "request": request,
-        "admin_username": get_setting(db, "ADMIN_USERNAME"),
+        "admin_username": ctx["name"], "is_admin": ctx["is_admin"],
         "ticket": ticket,
         "comments": comments
     })
@@ -734,10 +769,10 @@ async def admin_ticket_update(
         if not ticket:
             raise HTTPException(status_code=404, detail="Ticket not found")
         
-        ticket.status = status
+        ticket.status = ticket_status
         ticket.priority = priority
         
-        if status == "resolved" and not ticket.resolved_at:
+        if ticket_status == "resolved" and not ticket.resolved_at:
             ticket.resolved_at = datetime.utcnow()
         
         db.commit()
@@ -761,7 +796,7 @@ async def admin_add_comment(
         comment = Comment(
             ticket_id=ticket_id,
             author_type="admin",
-            author_name="Administrator",
+            author_name=ctx["name"],
             content=content,
             is_internal=(is_internal == "true")
         )
@@ -797,7 +832,7 @@ async def admin_users(request: Request, page: int = 1, search: str = None):
     
     return templates.TemplateResponse("admin/users.html", {
         "request": request,
-        "admin_username": get_setting(db, "ADMIN_USERNAME"),
+        "admin_username": ctx["name"], "is_admin": ctx["is_admin"],
         "users": users,
         "search": search,
         "pagination": {
@@ -826,7 +861,7 @@ async def admin_user_detail(request: Request, user_id: int):
     
     return templates.TemplateResponse("admin/user_detail.html", {
         "request": request,
-        "admin_username": get_setting(db, "ADMIN_USERNAME"),
+        "admin_username": ctx["name"], "is_admin": ctx["is_admin"],
         "user": user,
         "tickets": tickets
     })
@@ -835,11 +870,10 @@ async def admin_user_detail(request: Request, user_id: int):
 @app.get("/admin/settings", response_class=HTMLResponse)
 async def admin_settings(request: Request):
     """Admin settings page"""
-    session = validate_admin_session(request)
-    if not session:
-        return RedirectResponse(url="/admin/login", status_code=status.HTTP_302_FOUND)
-    
     with get_db() as db:
+        is_staff, is_admin = check_staff_access(request, db)
+        if not is_admin: return RedirectResponse(url="/admin/", status_code=status.HTTP_302_FOUND)
+        ctx = get_dashboard_context(request, db)
         settings_dict = {
             "ADMIN_USERNAME": get_setting(db, "ADMIN_USERNAME"),
             "RESEND_API_KEY": get_setting(db, "RESEND_API_KEY", decrypt=True),
@@ -852,7 +886,7 @@ async def admin_settings(request: Request):
     
     return templates.TemplateResponse("admin/settings.html", {
         "request": request,
-        "admin_username": settings_dict["ADMIN_USERNAME"],
+        "admin_username": ctx["name"], "is_admin": ctx["is_admin"],
         "settings": settings_dict,
         "message": request.query_params.get("message")
     })
@@ -869,11 +903,9 @@ async def admin_settings_post(
     cloudflare_zone_id: str = Form(""),
     cloudflare_account_id: str = Form("")
 ):
-    session = validate_admin_session(request)
-    if not session:
-        return RedirectResponse(url="/admin/login", status_code=status.HTTP_302_FOUND)
-
     with get_db() as db:
+        is_staff, is_admin = check_staff_access(request, db)
+        if not is_admin: return RedirectResponse(url="/admin/", status_code=status.HTTP_302_FOUND)
         set_setting(db, "ADMIN_USERNAME", admin_username)
         if admin_password:
             set_setting(db, "ADMIN_PASSWORD_HASH", hash_password(admin_password))

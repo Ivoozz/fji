@@ -1,103 +1,57 @@
-# FixJeICT v2
+# FixJeICT Enterprise
 
-Eenvoudig ticketsysteem voor IT-support, gebouwd met FastAPI.
+Een robuust, modern en snel ticketsysteem gebouwd voor IT-dienstverleners. Gemaakt met FastAPI, PostgreSQL, en een SEO-geoptimaliseerde "Liquid Glass" frontend.
 
-## Snelle Installatie
+![SaaS Ready](https://img.shields.io/badge/Status-Productie_Klaar-success)
+![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
+
+## ✨ Kernfuncties
+
+- **Interactieve First-Run Setup:** Volledige webgebaseerde configuratie (geen `.env` bestanden lokaal aanpassen).
+- **Asynchrone E-mail & Routing:** Maakt gebruik van Resend API en Cloudflare Email Routing in de achtergrond (Non-blocking).
+- **Beveiligde Opslag (AES):** Gevoelige API-sleutels worden versleuteld (Fernet) opgeslagen in de database.
+- **Rollen en Rechten (RBAC):**
+  - **Gebruiker:** Kan tickets aanmaken, reageren en bijlagen uploaden.
+  - **Fixer:** IT-support medewerker. Kan alle tickets beheren en interne notities toevoegen, maar geen systeeminstellingen wijzigen.
+  - **Admin:** Volledige systeemtoegang (inclusief API instellingen en gebruikersbeheer).
+- **Bestandsbijlagen:** Naadloze file-uploads gekoppeld aan support tickets.
+- **Liquid Glass UI:** Een moderne, responsieve en aantrekkelijke gebruikersinterface.
+
+## 🚀 Snelle Installatie (Aanbevolen)
+
+Run het volgende commando op een frisse Linux server (Debian/Ubuntu). Dit installeert Docker en start de database + applicatie automatisch op.
 
 ```bash
-# Download en run installer
 curl -fsSL https://raw.githubusercontent.com/Ivoozz/fji/main/install.sh | sudo bash
 ```
 
-Of handmatig:
+Navigeer vervolgens naar `http://<jouw-server-ip>:8000/setup` om de configuratie af te ronden.
+
+## 🐳 Handmatige Docker Installatie
 
 ```bash
 # 1. Clone repository
 git clone https://github.com/Ivoozz/fji.git /opt/fji
 cd /opt/fji
 
-# 2. Setup environment
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# 3. Configureer
-cp .env.example .env
-# Bewerk .env met je instellingen
-
-# 4. Database initialiseren
-mkdir -p data
-python3 -c "from models import init_db; init_db()"
-
-# 5. Start applicatie
-uvicorn main:app --host 0.0.0.0 --port 5000
+# 2. Start Productie Script
+chmod +x start-production.sh
+./start-production.sh
 ```
 
-## Structuur
+## 🛠 Tech Stack
 
-```
-/
-├── main.py              # FastAPI applicatie
-├── models.py            # Database modellen
-├── requirements.txt     # Dependencies
-├── install.sh           # Installer script
-├── .env.example         # Voorbeeld configuratie
-├── templates/           # Jinja2 templates
-│   ├── base.html
-│   ├── index.html
-│   ├── login.html
-│   ├── tickets.html
-│   ├── ticket_form.html
-│   ├── ticket_detail.html
-│   └── admin/
-│       ├── login.html
-│       ├── base.html
-│       ├── dashboard.html
-│       ├── tickets.html
-│       ├── ticket_detail.html
-│       ├── users.html
-│       ├── user_detail.html
-│       └── settings.html
-└── static/              # CSS, JS, images
-```
+- **Backend:** FastAPI (Python 3.11)
+- **Database:** PostgreSQL (via SQLAlchemy ORM)
+- **Frontend:** Jinja2 + Bootstrap 5 + Liquid Glass CSS
+- **Encryptie:** Cryptography (Fernet)
+- **Infrastructuur:** Docker & Docker Compose
 
-## Configuratie (.env)
+## 🔐 Veiligheid & Authenticatie
 
-```env
-SECRET_KEY=your-secret-key
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your-secure-password
-DATABASE_URL=sqlite:///data/fixjeict.db
-HOST=0.0.0.0
-PORT=5000
-```
+- Magic Link login voor gebruikers en fixers (geen wachtwoorden onthouden).
+- Admin heeft een sterk (gehasht) wachtwoord voor back-up toegang.
+- Alle systeemsleutels zijn versleuteld met een eenmalig gegenereerde `ENCRYPTION_KEY`.
 
-## URLs
-
-- **Website**: http://server-ip:5000/
-- **Admin Login**: http://server-ip:5000/admin/login
-- **API Docs**: http://server-ip:5000/docs
-
-## Service Beheer
-
-```bash
-# Status bekijken
-systemctl status fixjeict
-
-# Restart
-systemctl restart fixjeict
-
-# Logs bekijken
-journalctl -u fixjeict -f
-```
-
-## Default Credentials
-
-- **Username**: admin
-- **Password**: fixjeict123 (wijzig dit na installatie!)
-
-## Requirements
-
-- Python 3.8+
-- SQLite (standaard) of PostgreSQL
-- 512MB RAM minimum
+---
+*Gemaakt voor en door IT-professionals.*
